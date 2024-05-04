@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ajouter des joueurs</title>
+<style>
+  .player {
+    margin-bottom: 10px;
+  }
+</style>
+</head>
+<body>
+
+<h1>Ajouter des joueurs</h1>
+
+<form id="playerForm" onsubmit="savePlayers()">
+  <div id="players">
+    <!-- Les joueurs seront ajoutés ici -->
+  </div>
+  <button type="button" onclick="ajouterJoueur()">Ajouter un joueur</button>
+  <button type="submit">Envoyer</button>
+</form>
+
+<script>
+  let joueurIndex = 1;
+
+  function ajouterJoueur() {
+    const playersDiv = document.getElementById('players');
+
+    const joueurDiv = document.createElement('div');
+    joueurDiv.classList.add('player');
+
+    joueurDiv.innerHTML = `
+      <label for="joueur${joueurIndex}">Joueur ${joueurIndex}</label>
+      <input type="text" id="joueur${joueurIndex}" name="joueur${joueurIndex}" placeholder="Nom du joueur">
+      <input type="text" id="touche${joueurIndex}" name="touche${joueurIndex}" placeholder="Touche du clavier">
+      <input type="file" id="image${joueurIndex}" name="image${joueurIndex}" accept="image/*">
+    `;
+
+    playersDiv.appendChild(joueurDiv);
+    joueurIndex++;
+  }
+
+  function savePlayers() {
+    const players = [];
+
+    for (let i = 1; i < joueurIndex; i++) {
+      const joueurName = document.getElementById(`joueur${i}`).value;
+      const toucheClavier = document.getElementById(`touche${i}`).value;
+      const imageUrl = document.getElementById(`image${i}`).value;
+
+      players.push({
+        nom: joueurName,
+        touche: toucheClavier,
+        image: imageUrl
+      });
+    }
+
+    // Appeler le script Node.js pour enregistrer les données
+    const { exec } = require('child_process');
+    exec(`node savePlayers.js '${JSON.stringify(players)}'`, (err, stdout, stderr) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+      console.log(stdout);
+    });
+  }
+</script>
+
+</body>
+</html>
