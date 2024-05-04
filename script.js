@@ -1,3 +1,4 @@
+//index.html
 document.addEventListener('keydown', function(event) {
     // Vérifie si la touche pressée est la touche "E" (vous pouvez utiliser une autre touche selon vos préférences)
     if (event.key === 'e' || event.key === 'E') {
@@ -14,3 +15,23 @@ document.addEventListener('keydown', function(event) {
         }, tempsAffichage);
     }
 });
+
+//params.html
+let playerCount = 1;
+
+function addPlayer() {
+  playerCount++;
+  const playersContainer = document.getElementById('playersContainer');
+  const playerDiv = document.createElement('div');
+  playerDiv.classList.add('player');
+  playerDiv.innerHTML = `
+    <label for="player${playerCount}">Joueur ${playerCount}</label>
+    <input type="text" id="player${playerCount}" name="player${playerCount}" placeholder="Pseudo du joueur ${playerCount}">
+    <label for="key${playerCount}">Touche du clavier</label>
+    <input type="text" id="key${playerCount}" name="key${playerCount}" placeholder="Touche du clavier pour le joueur ${playerCount}">
+    <label for="image${playerCount}">Image</label>
+    <input type="file" id="image${playerCount}" name="image${playerCount}">
+  `;
+  playersContainer.appendChild(playerDiv);
+}
+
