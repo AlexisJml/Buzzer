@@ -1,7 +1,11 @@
 const HID = require('node-hid');
-const devices = HID.devices();
+const nintendoVID = 0x057E;
 
-console.log("Périphériques HID connectés:");
-devices.forEach(device => {
+//recherche tout les devices Nintendo
+const devices = HID.devices();
+const nintendoDevices = devices.filter(device => device.vendorId === nintendoVID);
+
+console.log("Périphériques Nintendo connectés:");
+nintendoDevices.forEach(device => {
     console.log(`Device: ${device.product}, Vendor ID: ${device.vendorId}, Product ID: ${device.productId}`);
 });
