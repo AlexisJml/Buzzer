@@ -1,80 +1,95 @@
-# import bluetooth
+# import pygame
 
-# def find_nintendo_devices():
-#     devices = bluetooth.discover_devices(duration=8, lookup_names=True, flush_cache=True, lookup_class=False)
-#     nintendo_devices = []
-#     for addr, name in devices:
-#         if "Joy-Con (R)" in name:  # Filtre par nom pour les Joy-Con droit
-#             nintendo_devices.append((addr, name))
-#     return nintendo_devices
+# # Initialiser Pygame et le joystick
+# pygame.init()
+# pygame.joystick.init()
 
-# nintendo_devices = find_nintendo_devices()
-# for addr, name in nintendo_devices:
-#     print(f"Nintendo Device Found: {name} with MAC Address: {addr}")
+# # Assurer qu'au moins un joystick est connecté
+# if pygame.joystick.get_count() > 1:
+#     print("Aucun joystick détecté !")
+#     pygame.quit()
+#     exit()
 
-# def connect_and_read(device_address):
-#     # UUID pour le profil RFCOMM
-#     uuid = "00001101-0000-1000-8000-00805F9B34FB"
-#     service_matches = bluetooth.find_service(uuid=uuid, address=device_address)
+# # Créer un objet Joystick pour le premier joystick connecté
+# joycon = pygame.joystick.Joystick(0)
+# joycon.init()
 
-#     if service_matches:
-#         first_match = service_matches[0]
-#         port = first_match['port']
-#         name = first_match['name']
-#         host = first_match['host']
+# try:
+#     while True:
+#         for event in pygame.event.get():
+#             # Détecter les appuis sur les boutons
+#             if event.type == pygame.JOYBUTTONDOWN:
+#                 print(f"Bouton {event.button} appuyé")
+#             if event.type == pygame.JOYBUTTONUP:
+#                 print(f"Bouton {event.button} relâché")
 
-#         sock = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
-#         try:
-#             sock.connect((host, port))
-#             data = sock.recv(1024)
-#             print("Received:", data)
-#         finally:
-#             sock.close()
-#     else:
-#         print("No services found for this device.")
+# finally:
+#     # Désinitialiser Pygame à la fermeture du programme
+#     pygame.quit()
 
-import bluetooth
-import re
+# import pygame
 
-def find_nintendo_devices():
-    devices = bluetooth.discover_devices(duration=8, lookup_names=True, flush_cache=True, lookup_class=False)
-    nintendo_devices = []
-    for addr, name in devices:
-        if "Joy-Con" in name: 
-            nintendo_devices.append((addr, name))
-    return nintendo_devices
+# # Initialiser Pygame et le module joystick
+# pygame.init()
+# pygame.joystick.init()
 
-nintendo_devices = find_nintendo_devices()
-for addr, name in nintendo_devices:
-    print(f"Nintendo Device Found: {name} with MAC Address: {addr}")
+# # Vérifier le nombre de joysticks connectés
+# joystick_count = pygame.joystick.get_count()
+# if joystick_count == 0:
+#     print("Aucun joystick détecté !")
+#     pygame.quit()
+#     exit()
 
-# def connect_and_read(device_address):
-#     uuid = "00001101-0000-1000-8000-00805F9B34FB"
-#     service_matches = bluetooth.find_service(uuid=uuid, address=device_address)
+# # Créer des objets Joystick pour chaque joystick connecté
+# joysticks = [pygame.joystick.Joystick(i) for i in range(joystick_count)]
+# for joystick in joysticks:
+#     joystick.init()
+#     print(f"Joystick {joystick.get_name()} initialisé.")
 
-#     if service_matches:
-#         first_match = service_matches[0]
-#         port = first_match['port']
-#         name = first_match['name']
-#         host = first_match['host']
+# try:
+#     while True:
+#         for event in pygame.event.get():
+#             # Gérer les événements de boutons pour tous les joysticks
+#             if event.type == pygame.JOYBUTTONDOWN or event.type == pygame.JOYBUTTONUP:
+#                 # Vérifier que l'indice du joystick est valide
+#                 if event.joy < joystick_count:
+#                     action = "appuyé" if event.type == pygame.JOYBUTTONDOWN else "relâché"
+#                     print(f"Joystick {event.joy} : Bouton {event.button} {action}")
+#                 else:
+#                     print(f"Événement reçu pour un joystick non reconnu : {event.joy}")
+# finally:
+#     # Désinitialiser Pygame à la fermeture du programme
+#     pygame.quit()
 
-#         sock = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
-#         try:
-#             sock.connect((host, port))
-#             print(f"Connected to {name} on {host}:{port}")
-#             try:
-#                 while True:  # Continue à lire tant que la connexion est active
-#                     data = sock.recv(1024)
-#                     if not data:
-#                         break  # Arrête la boucle si aucune donnée n'est reçue
-#                     print("Received:", data)
-#             except KeyboardInterrupt:
-#                 print("Reception stopped by user.")
-#         finally:
-#             sock.close()
-#             print("Connection closed.")
-#     else:
-#         print("No services found for this device.")
 
-# if nintendo_devices:
-#     connect_and_read(nintendo_devices[0][0])
+import pygame
+
+# Initialiser Pygame et le module joystick
+pygame.init()
+pygame.joystick.init()
+
+# Vérifier le nombre de joysticks connectés
+joystick_count = pygame.joystick.get_count()
+if joystick_count == 0:
+    print("Aucun joystick détecté !")
+    pygame.quit()
+    exit()
+
+# Créer des objets Joystick pour chaque joystick connecté
+joysticks = [pygame.joystick.Joystick(i) for i in range(joystick_count)]
+for joystick in joysticks:
+    joystick.init()
+    print(f"Joystick {joystick.get_name()} initialisé.")
+
+try:
+    while True:
+        for event in pygame.event.get():
+            if event.type in [pygame.JOYBUTTONDOWN, pygame.JOYBUTTONUP]:
+                if event.joy < len(joysticks):
+                    action = "appuyé" if event.type == pygame.JOYBUTTONDOWN else "relâché"
+                    print(f"Joystick {event.joy} : Bouton {event.button} {action}")
+                else:
+                    print(f"Erreur: Événement reçu pour joystick non initialisé (index {event.joy})")
+finally:
+    pygame.quit()
+
