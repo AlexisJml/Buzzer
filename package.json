@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "node-gamepad": "^0.1.15",
+    "switch-controller": "^0.6.5"
+  }
+}
